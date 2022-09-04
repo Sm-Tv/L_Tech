@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.*
+import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -23,6 +24,7 @@ class ContentFragment : Fragment() {
     private lateinit var sortGroup: ThemedToggleButtonGroup
     private lateinit var recyclerItem: RecyclerView
     private lateinit var adapter: ContentAdapter
+    private lateinit var progressBar: ProgressBar
     lateinit var mainHandler: Handler
 
     private val updateData = object : Runnable {
@@ -74,6 +76,7 @@ class ContentFragment : Fragment() {
     private fun init(view: View) {
         viewModel = ViewModelProvider(this)[MainVM::class.java]
         sortGroup = view.findViewById(R.id.sortGroup)
+        progressBar = view.findViewById(R.id.progressBarContentF)
         sortGroup.selectButton(R.id.serverSort)
         adapter = ContentAdapter()
         recyclerItem = view.findViewById(R.id.recyclerItem)
@@ -83,11 +86,13 @@ class ContentFragment : Fragment() {
     }
 
     private fun getListItem() {
+        showProgressBar(visible = true)
         viewModel.getListItem()
     }
 
     private fun observerPerItem() {
         viewModel.listItem.observe(viewLifecycleOwner, Observer {
+            showProgressBar(visible = false)
             updateData(it, false)
         })
     }
@@ -112,6 +117,16 @@ class ContentFragment : Fragment() {
     private fun updateData(item: List<Item>?, flag: Boolean) {
         adapter.setSortItems(item!!, flag)
         recyclerItem.smoothScrollToPosition(0)
+    }
+
+    private fun showProgressBar(visible: Boolean) {
+        if (visible) {
+            progressBar.visibility = View.VISIBLE
+            recyclerItem.visibility = View.INVISIBLE
+        } else {
+            progressBar.visibility = View.GONE
+            recyclerItem.visibility = View.VISIBLE
+        }
     }
 
     companion object {

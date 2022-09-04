@@ -18,13 +18,6 @@ object MaskHelper {
         return MaskFormatWatcher(MaskImpl.createTerminated(slots))
     }
 
-//    fun staticApplyMask(mask: String?, phone: String?): String {
-//        val slots = mask?.let { createSlot(it) }
-//        val inputMask = slots?.let { MaskImpl.createTerminated(it) }
-//        inputMask?.insertFront(phone)
-//        return inputMask.toString()
-//    }
-
     fun applyMask(mask: String?, edPhoneNumber: EditText) {
         val slots = mask?.let { createSlot(it) }
         val formatWatcher = slots?.let { createFormatWatcher(it) }
